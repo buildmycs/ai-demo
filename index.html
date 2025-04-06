@@ -70,6 +70,27 @@
         v-model="Imgoutput"
       >
       </el-input>
+
+      <el-table :data="ocrcontent" style="width: 100%">
+        <el-table-column prop="id" label="主键" width="180"> </el-table-column>
+        <el-table-column prop="content" label="内容" width="300">
+        </el-table-column>
+        <el-table-column prop="type" label="类型" width="180">
+        </el-table-column>
+        <el-table-column prop="creatTime" label="创建时间"> </el-table-column>
+        <el-table-column prop="modifyTime" label="修改时间"> </el-table-column>
+        <el-table-column align="right">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)"
+              >Delete</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button @click="getcontent">点击显示后端数据</el-button>
     </div>
 
     <script>
@@ -80,8 +101,27 @@
           Nlpoutput: "",
           Wordoutput: "",
           Imgoutput: "",
+          ocrcontent: "",
         },
         methods: {
+          handleDelete(index, row) {
+            axios
+              .delete("http://127.0.0.1:8080/deleteocr", {
+                params: {
+                  id: row.id,
+                },
+              })
+              .then((res) => {
+                console.log(res.data);
+              });
+          },
+
+          getcontent() {
+            axios.get("http://127.0.0.1:8080/getallocr", {}).then((res) => {
+              this.ocrcontent = res.data;
+              console.log(res.data);
+            });
+          },
           nlp() {
             axios
               .get("http://127.0.0.1:8080/nlp", {
